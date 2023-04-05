@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Repositories\BookingRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Request;
+use App\Http\Requests\BookingRequest;
 
 class BookingController extends Controller
 {
@@ -16,7 +16,7 @@ class BookingController extends Controller
         $this->bookingRepository = $bookingRepository;
     }
 
-    public function create(Request $request): JsonResponse
+    public function create(BookingRequest $request): JsonResponse
     {
         $booking = $this->bookingRepository->create($request->all());
 

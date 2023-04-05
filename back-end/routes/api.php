@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\Api\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,11 +16,18 @@ use App\Http\Controllers\BookingController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+/*Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
-});
+});*/
 
-Route::prefix('booking')->group(function () {
-    Route::post('/create', [BookingController::class, 'create']);
-    Route::post('/list', [BookingController::class, 'list']);
+Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
+
+Route::middleware('auth:api')->group(function () {
+    Route::get('me', [AuthController::class, 'me']);
+    Route::get('logout', [AuthController::class, 'logout']);
+    Route::prefix('booking')->group(function () {
+        Route::post('/create', [BookingController::class, 'create']);
+        Route::get('/list', [BookingController::class, 'list']);
+    });
 });

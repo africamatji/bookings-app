@@ -18,7 +18,9 @@ class BookingController extends Controller
 
     public function create(BookingRequest $request): JsonResponse
     {
-        $booking = $this->bookingRepository->create($request->all());
+        $requestData = $request->all();
+        $requestData['user_id'] = Auth::id();
+        $booking = $this->bookingRepository->create($requestData);
 
         return response()->json([
             'message' => 'successful',

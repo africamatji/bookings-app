@@ -26,9 +26,8 @@ Route::post('login', [AuthController::class, 'login']);
 Route::middleware('auth:api')->group(function () {
     Route::get('me', [AuthController::class, 'me']);
     Route::get('logout', [AuthController::class, 'logout']);
-});
-
-Route::prefix('booking')->group(function () {
-    Route::post('/create', [BookingController::class, 'create']);
-    Route::post('/list', [BookingController::class, 'list']);
+    Route::prefix('booking')->group(function () {
+        Route::post('/create', [BookingController::class, 'create']);
+        Route::get('/list', [BookingController::class, 'list']);
+    });
 });

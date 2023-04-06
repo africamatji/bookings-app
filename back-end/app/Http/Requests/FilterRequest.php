@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class BookingRequest extends FormRequest
+class FilterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,7 @@ class BookingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'reason' => 'required|string|max:255',
-            'date' => 'required|string',
+            'type' => 'required|in:past,future',
         ];
     }
 

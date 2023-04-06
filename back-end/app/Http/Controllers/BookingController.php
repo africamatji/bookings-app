@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\BookingRepository;
+use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\BookingRequest;
+use App\Http\Requests\FilterRequest;
 
 class BookingController extends Controller
 {
@@ -30,8 +32,17 @@ class BookingController extends Controller
 
     public function list(): JsonResponse
     {
-        $userId = Auth::id();
-        $bookings = $this->bookingRepository->list($userId);
+        $bookings = $this->bookingRepository->list();
+
+        return response()->json([
+            'message' => 'successful',
+            'bookings' => $bookings
+        ]);
+    }
+
+    public function filter(FilterRequest $request): JsonResponse
+    {
+        $bookings = $this->bookingRepository->filter($request->type);
 
         return response()->json([
             'message' => 'successful',

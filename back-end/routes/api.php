@@ -29,5 +29,6 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('booking')->group(function () {
         Route::post('/create', [BookingController::class, 'create']);
         Route::get('/list', [BookingController::class, 'list']);
+        Route::get('/filter', [BookingController::class, 'filter']);
     });
 });

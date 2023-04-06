@@ -24,7 +24,6 @@ class BookingRequest extends FormRequest
         return [
             'reason' => 'required|string|max:255',
             'date' => 'required|string',
-            'user_id' => 'required|integer'
         ];
     }
 }

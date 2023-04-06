@@ -59,4 +59,19 @@ class AuthTest extends TestCase
             'access_token',
         ]);
     }
+
+    public function test_can_login_with_invalid_credentials()
+    {
+        $requestData = [
+            'email' => $this->faker->safeEmail(),
+            'password' => $this->faker->password(),
+        ];
+
+        $response = $this->postJson('/api/login', $requestData);
+
+        $response->assertStatus(401);
+        $response->assertJson([
+            'error' => 'Authorised Access',
+        ]);
+    }
 }

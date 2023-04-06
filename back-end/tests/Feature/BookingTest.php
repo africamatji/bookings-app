@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\BookingController;
+use App\Models\Booking;
 use App\Models\User;
 use App\Repositories\BookingRepository;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -18,27 +19,18 @@ class BookingTest extends TestCase
     public function test_can_create_booking(): void
     {
         $user = User::factory()->create();
-
         $request = [
             'reason' => $this->faker->sentence,
             'date' => $this->faker->dateTime()->format('Y-m-d H:i:s'),
         ];
 
-        //$booking = new Booking();
-/*        $mockBookingRepository = $this->createMock(BookingRepository::class);
-        $mockBookingRepository->expects($this->once())
-            ->method('create')
-            ->with($request->all());
-        $controller = new BookingController($mockBookingRepository);*/
-
         $response = $this->actingAs($user, 'api')->post('api/booking/create', $request);
 
+        $response->assertStatus(200);
         $response->assertJson([
             'message' => 'successful',
             'booking' => $request
         ]);
-
-        $response->assertStatus(200);
     }
 
     public function test_can_list_bookings(): void
@@ -90,5 +82,37 @@ class BookingTest extends TestCase
         $responseData = json_decode($response->getContent(), true);
         $this->assertEquals('successful', $responseData['message']);
         $this->assertEquals($bookings->toArray(), $responseData['bookings']);
+    }
+
+    public function test_can_filter_bookings(): void
+    {
+        //past bookings
+        $user = User::factory()->create();
+        $token = $user->createToken('TestToken')->accessToken;
+        $headers = ['Authorization' => 'Bearer ' . $token];
+
+        Booking::factory([
+            'user_id' => $user->id,
+            'date' => $this->faker->dateTimeBetween('-1 day', 'now')->format('Y-m-d H:i:s')
+        ])->create();
+
+        $response = $this->get('api/booking/filter?type=past', $headers);
+
+        $response->assertStatus(200);
+        foreach ($response['bookings'] as $booking){
+            $this->assertLessThan(now(), $booking['date']);
+        }
+
+        //future bookings
+        Booking::factory([
+            'user_id' => $user->id,
+            'date' => $this->faker->dateTimeBetween('now', '+2 days')->format('Y-m-d H:i:s')
+        ])->create();
+        $response = $this->get('api/booking/filter?type=future', $headers);
+
+        $response->assertStatus(200);
+        foreach ($response['bookings'] as $booking){
+            $this->assertGreaterThan(now(), $booking['date']);
+        }
     }
 }

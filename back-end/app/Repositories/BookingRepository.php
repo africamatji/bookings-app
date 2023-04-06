@@ -26,11 +26,15 @@ class BookingRepository implements BookingInterface
         return $this->model->where('user_id', $userId)->get();
     }
 
-    public function filter(string $filter): Collection
+    public function filter(string $type): Collection
     {
-        if($filter === 'past')
-        {
-            //$bookings = Booking::where('user_id')
-        }
+        $userId = Auth::id();
+        $operand = $type === 'past' ? '<' : '>=';
+        $order = $type === 'past' ? 'desc' : 'asc';
+
+        return Booking::where('user_id', $userId)
+            ->where('date', $operand, now())
+            ->orderBy('date', $order)
+            ->get();
     }
 }

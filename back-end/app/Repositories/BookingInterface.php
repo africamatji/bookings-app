@@ -9,5 +9,5 @@ interface BookingInterface
 {
     public function create(array $data): Booking;
     public function list(): Collection;
-    public function filter(string $filter): Collection;
+    public function filter(string $type): Collection;
 }

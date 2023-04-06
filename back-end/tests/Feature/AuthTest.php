@@ -36,16 +36,20 @@ class AuthTest extends TestCase
 
     public function test_can_login_with_valid_credentials(): void
     {
+        // Create a user with a random password
         $password = $this->faker->password();
-        $user = User::factory([
+        $user = User::factory()->create([
             'password' => Hash::make($password)
-        ])->create();
+        ]);
+
+        // Request payload
         $requestData = [
             'email' => $user->email,
             'password' => $password,
         ];
 
-        $response = $this->postJson('/api/login', $requestData);
+        // Login request
+        $response = $this->post('/api/login', $requestData);
 
         $response->assertStatus(200);
         $response->assertJsonStructure([
@@ -58,9 +62,11 @@ class AuthTest extends TestCase
             ],
             'access_token',
         ]);
+        $responseData = $response->json();
+        $this->assertNotEmpty($responseData['access_token']);
     }
 
-    public function test_can_login_with_invalid_credentials()
+    public function test_can_login_with_invalid_credentials(): void
     {
         $requestData = [
             'email' => $this->faker->safeEmail(),
@@ -74,4 +80,42 @@ class AuthTest extends TestCase
             'error' => 'Authorised Access',
         ]);
     }
+
+    public function test_can_logout(): void
+    {
+        $user = User::factory()->create();
+        $token = $user->createToken('TestToken')->accessToken;
+
+        $headers = ['Authorization' => 'Bearer ' . $token];
+        $response = $this->get('api/logout', $headers);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'message' => 'Successfully logged out!',
+            ]);
+
+        //assert token is revoked
+        $this->assertNull($user->tokens()->find($token));
+    }
+
+    public function test_me_endpoint(): void
+    {
+        $user = User::factory()->create();
+        $token = $user->createToken('TestToken')->accessToken;
+
+        $headers = ['Authorization' => 'Bearer ' . $token];
+        $response = $this->get('api/me', $headers);
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'user' => [
+                'id',
+                'name',
+                'email',
+                'created_at',
+                'updated_at',
+            ],
+        ]);
+    }
+
 }

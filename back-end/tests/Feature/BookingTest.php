@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use App\Http\Controllers\BookingController;
 use App\Models\User;
 use App\Repositories\BookingRepository;
-use Faker\Factory as Faker;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
@@ -13,13 +13,7 @@ use Illuminate\Http\JsonResponse;
 
 class BookingTest extends TestCase
 {
-    protected $faker;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->faker = Faker::create();
-    }
+    use WithFaker;
 
     public function test_can_create_booking(): void
     {
@@ -51,7 +45,6 @@ class BookingTest extends TestCase
     {
         //$user = User::factory()->create();
         $user = User::where('email', 'charles@test.com')->first();
-        $userId = $user->id;
         $token = $user->createToken('TestToken')->accessToken;
 
         $headers = ['Authorization' => 'Bearer ' . $token];
@@ -76,17 +69,20 @@ class BookingTest extends TestCase
         $userId = $user->id;
         // Create a mock BookingRepository instance
         $mockBookingRepository = $this->createMock(BookingRepository::class);
-
         // Expectations for the mock BookingRepository
         $bookings = Collection::make([
-            ['id' => 1, 'reason' => 'Example reason', 'date' => '2023-04-05 18:33:15', 'user_id' => $userId]
+            [
+                'id' => 1,
+                'reason' => $this->faker->sentence,
+                'date' => $this->faker->dateTime()->format('Y-m-d H:i:s'),
+                'user_id' => $userId
+            ]
         ]);
         Auth::shouldReceive('id')->andReturn($userId);
         $mockBookingRepository->expects($this->once())
             ->method('list')
             ->with($userId)
             ->willReturn($bookings);
-
         // Call the list() method on the BookingController instance
         $bookingController = new BookingController($mockBookingRepository);
         $response = $bookingController->list();

@@ -81,7 +81,6 @@ class BookingTest extends TestCase
         Auth::shouldReceive('id')->andReturn($userId);
         $mockBookingRepository->expects($this->once())
             ->method('list')
-            ->with($userId)
             ->willReturn($bookings);
         // Call the list() method on the BookingController instance
         $bookingController = new BookingController($mockBookingRepository);

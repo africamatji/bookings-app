@@ -30,8 +30,7 @@ class BookingController extends Controller
 
     public function list(): JsonResponse
     {
-        $userId = Auth::id();
-        $bookings = $this->bookingRepository->list($userId);
+        $bookings = $this->bookingRepository->list();
 
         return response()->json([
             'message' => 'successful',

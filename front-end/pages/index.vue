@@ -1,7 +1,7 @@
 <template>
   <v-row justify="center" align="center">
     <div class="text-center">
-      <add-dialog ref="addDialogRef"/>
+      <add-dialog ref="addDialogRef" @appendBookingList="appendBookingList"/>
     </div>
     <v-col cols="12" md="8" sm="10">
       <v-card>
@@ -106,7 +106,10 @@ export default {
       } catch (error) {
         console.error(error)
       }
-    }
+    },
+    appendBookingList(data) {
+      this.bookings.push(data)
+    },
   },
   async mounted() {
     if(!this.isAuthenticated)

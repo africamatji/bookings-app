@@ -56,14 +56,15 @@ export default {
     async addBooking() {
       if(this.$refs.addForm.validate())
       {
-        const data = {
+        const request_data = {
           'reason': this.reason,
           'date': this.date,
         };
         try {
-          const response = await addBooking(data)
-          console.log('response', response)
+          const { data } = await addBooking(request_data)
           this.dialog = false;
+          this.$emit('appendBookingList', data.booking)
+          console.log('response', data.booking)
         } catch (e) {
           console.error(e)
         }

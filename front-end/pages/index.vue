@@ -38,7 +38,7 @@
           <loaders v-if="isLoading"/>
           <template v-else>
             <p v-if="bookings.length === 0">
-              (0) bookings
+              No bookings
             </p>
             <template v-else>
               <v-list v-for="(booking, i) in bookings">
@@ -114,7 +114,7 @@ export default {
   async mounted() {
     if(!this.isAuthenticated)
     {
-      //await this.$router.push('/login');
+      await this.$router.push('/login');
     }
     await this.allBookings()
   }

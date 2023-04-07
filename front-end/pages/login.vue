@@ -1,7 +1,7 @@
 <template>
-  <v-row>
-    <v-col>
-      <p>Login</p>
+  <v-row justify="center" align="center">
+    <v-col cols="12" sm="8" md="6" class="mt-4">
+      <h2>Login</h2>
       <v-form ref="loginForm">
         <v-text-field
           v-model="email"
@@ -15,6 +15,7 @@
           :counter="10"
           :rules="passwordRules"
           label="Password"
+          type="password"
           required
         ></v-text-field>
       </v-form>
@@ -31,7 +32,7 @@
 
 <script>
 import { login, register } from "../plugin/api";
-import { mapMutations } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex';
 
 export default {
   name: "login",
@@ -49,19 +50,20 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['isAuthenticated'])
   },
   methods: {
     async submit() {
       if(this.$refs.loginForm.validate())
       {
         try {
-          const response = await login({
+          const { data } = await login({
             email: this.email,
             password: this.password
           })
-          await localStorage.setItem('access_token', response.data.access_token);
+          await localStorage.setItem('access_token', data.access_token);
           this.setAuthentication(true);
-          this.$router.push('/');
+          await this.$router.push('/');
         } catch (error) {
           console.error(error)
           this.error = 'Login failed'
@@ -72,6 +74,12 @@ export default {
       setAuthentication: 'setAuthentication',
     })
   },
+  async mounted() {
+    if(this.isAuthenticated)
+    {
+      await this.$router.push('/');
+    }
+  }
 }
 </script>
 

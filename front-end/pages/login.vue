@@ -12,7 +12,6 @@
 
         <v-text-field
           v-model="password"
-          :counter="10"
           :rules="passwordRules"
           label="Password"
           type="password"

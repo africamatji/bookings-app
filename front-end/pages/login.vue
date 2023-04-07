@@ -52,7 +52,6 @@ export default {
   },
   methods: {
     async submit() {
-      //this.$store.commit('setAuthentication', true)
       if(this.$refs.loginForm.validate())
       {
         try {

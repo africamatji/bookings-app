@@ -91,7 +91,6 @@ export default {
             const { data } = await login(loginPayload)
             await localStorage.setItem('access_token', data.access_token)
             this.setAuthentication(true)
-            this.registerLoading = false
             await this.$router.push('/')
           }
         }catch (e) {

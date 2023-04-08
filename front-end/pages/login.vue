@@ -18,6 +18,9 @@
           required
         ></v-text-field>
       </v-form>
+      <v-alert dense outlined type="error" v-if="loginError">
+        Please confirm login details and retry
+      </v-alert>
       <v-row>
         <v-col cols="4">
           <v-btn
@@ -37,7 +40,7 @@
 </template>
 
 <script>
-import { login, register } from "../plugin/api";
+import { login } from "../plugin/api";
 import { mapMutations, mapGetters } from 'vuex';
 
 export default {
@@ -46,6 +49,7 @@ export default {
     return {
       email: null,
       password: null,
+      loginError: false,
       emailRules: [
         v => !!v || 'E-mail is required',
         v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
@@ -63,16 +67,22 @@ export default {
       if(this.$refs.loginForm.validate())
       {
         try {
-          const { data } = await login({
+          const response= await login({
             email: this.email,
             password: this.password
           })
-          await localStorage.setItem('access_token', data.access_token);
-          this.setAuthentication(true);
-          await this.$router.push('/');
+          if(response.status === 200)
+          {
+            const { data } = response
+            await localStorage.setItem('access_token', data.access_token);
+            this.setAuthentication(true);
+            await this.$router.push('/');
+          } else {
+            this.loginError = true;
+          }
         } catch (error) {
           console.error(error)
-          this.error = 'Login failed'
+          this.loginError = true;
         }
       }
     },

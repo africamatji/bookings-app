@@ -35,6 +35,7 @@
       <v-btn
         color="success"
         class="mr-4"
+        :loading="registerLoading"
         @click="submit"
       >
         Register
@@ -44,7 +45,8 @@
 </template>
 
 <script>
-import { register } from "../plugin/api";
+import { register, login } from "../plugin/api";
+import { mapMutations } from "vuex";
 
 export default {
   name: "register",
@@ -54,6 +56,7 @@ export default {
       email: null,
       password: null,
       c_password: null,
+      registerLoading: false,
       emailRules: [
         v => !!v || 'E-mail is required',
         v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
@@ -71,6 +74,7 @@ export default {
     async submit() {
       if(this.$refs.registerForm.validate())
       {
+        this.registerLoading = true
         const { name, email, password } = this
         try{
           const payload = {
@@ -78,12 +82,26 @@ export default {
             email,
             password,
           };
-          const { data } = await register(payload)
+          const response = await register(payload)
+          if(response.status === 200) {
+            const loginPayload = {
+              email,
+              password
+            }
+            const { data } = await login(loginPayload)
+            await localStorage.setItem('access_token', data.access_token)
+            this.setAuthentication(true)
+            this.registerLoading = false
+            await this.$router.push('/')
+          }
         }catch (e) {
           console.error(e)
         }
       }
-    }
+    },
+    ...mapMutations({
+      setAuthentication: 'setAuthentication',
+    })
   },
 }
 </script>

@@ -6,17 +6,29 @@ const api = axios.create({
     'Content-Type': 'application/json'
   }
 })
-const accessToken = localStorage.getItem('access_token')
 
 export const login = (credentials) => {
+
   return api.post('/login', credentials)
 }
 
 export const register = (userData) => {
+
   return api.post('/register', userData)
 }
 
+export const logout = () => {
+  const accessToken = localStorage.getItem('access_token')
+
+  return api.get(`/logout`, {
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    }
+  })
+}
+
 export const listBookings = () => {
+  const accessToken = localStorage.getItem('access_token')
 
   return api.get('/booking/list', {
     headers: {
@@ -24,8 +36,8 @@ export const listBookings = () => {
     }
   })
 }
-
 export const filterBookings = (type) => {
+  const accessToken = localStorage.getItem('access_token')
 
   return api.get(`/booking/filter?type=${type}`, {
     headers: {
@@ -33,8 +45,8 @@ export const filterBookings = (type) => {
     }
   })
 }
-
 export const addBooking = (data) => {
+  const accessToken = localStorage.getItem('access_token')
 
   return api.post(`/booking/create`, data,{
     headers: {

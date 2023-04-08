@@ -6,7 +6,7 @@ const api = axios.create({
     'Content-Type': 'application/json'
   }
 })
-//const accessToken = localStorage.getItem('access_token')
+
 export const login = (credentials) => {
 
   return api.post('/login', credentials)

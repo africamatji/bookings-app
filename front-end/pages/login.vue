@@ -18,13 +18,20 @@
           required
         ></v-text-field>
       </v-form>
-        <v-btn
-          color="success"
-          class="mr-4"
-          @click="submit"
-        >
-          Login
-        </v-btn>
+      <v-row>
+        <v-col cols="4">
+          <v-btn
+            color="success"
+            class="mr-4"
+            @click="submit"
+          >
+            Login
+          </v-btn>
+        </v-col>
+        <v-col class="mt-2">
+          <nuxt-link to="/register">Register >></nuxt-link>
+        </v-col>
+      </v-row>
     </v-col>
   </v-row>
 </template>

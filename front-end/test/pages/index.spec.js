@@ -92,7 +92,7 @@ describe('index', () => {
           },
         },
       },
-      stubs: ['v-form', 'v-text-field', 'v-btn', 'nuxt-link']
+      stubs: ['v-text-field', 'v-btn', 'nuxt-link']
     })
   })
 

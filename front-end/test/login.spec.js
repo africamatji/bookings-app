@@ -42,7 +42,7 @@ describe('login', () => {
       password: 'password'
     }
     wrapper.setData(data)
-    wrapper.vm.$refs.loginForm.validate = jest.fn().mockReturnValue(true)
+    validForm(true)
 
     jest.spyOn(Object.getPrototypeOf(window.localStorage), 'setItem')
     Object.setPrototypeOf(window.localStorage.setItem, jest.fn())
@@ -56,12 +56,16 @@ describe('login', () => {
   })
 
   it('should not submit login', async () => {
-    wrapper.vm.$refs.loginForm.validate = jest.fn().mockReturnValue(false)
+    validForm(false)
     await wrapper.vm.submit()
 
     expect(mockLogin).not.toHaveBeenCalled()
     expect(setAuthentication).not.toHaveBeenCalledWith()
     expect(routePush).not.toHaveBeenCalledWith()
   })
+
+  let validForm = (valid) => {
+    wrapper.vm.$refs.loginForm.validate = jest.fn().mockReturnValue(valid)
+  }
 
 })

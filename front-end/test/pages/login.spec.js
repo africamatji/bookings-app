@@ -6,7 +6,12 @@ import { login as mockLogin } from '@/plugin/api'
 
 Vue.use(Vuetify)
 
-let response = { data: { access_token: '12345' } };
+let response = {
+  data: {
+    access_token: '12345'
+  },
+  status: 200
+};
 
 jest.mock('@/plugin/api', () => ({
   login: jest.fn(() => Promise.resolve(response))
@@ -24,10 +29,13 @@ describe('login', () => {
           push: routePush
         },
         $store: {
-          commit: setAuthentication
+          commit: setAuthentication,
+          getters: {
+            isAuthenticated: jest.fn()
+          },
         },
       },
-      stubs: ['v-form', 'v-text-field', 'v-btn']
+      stubs: ['v-form', 'v-text-field', 'v-btn', 'nuxt-link']
     })
   })
 

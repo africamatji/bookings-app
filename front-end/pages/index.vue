@@ -11,7 +11,7 @@
               <v-btn
                 color="primary"
                 nuxt
-                @click="addBooking"
+                @click="showAddBooking"
                 rounded
               >
                 Add Booking
@@ -85,7 +85,7 @@ export default {
     ...mapGetters(['isAuthenticated'])
   },
   methods: {
-    addBooking() {
+    showAddBooking() {
       this.$refs.addDialogRef.toggleDialog(true)
     },
     async filterBookings(type) {

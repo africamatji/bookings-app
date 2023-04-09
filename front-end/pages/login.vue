@@ -67,22 +67,22 @@ export default {
       if(this.$refs.loginForm.validate())
       {
         try {
-          const response= await login({
+          const response = await login({
             email: this.email,
             password: this.password
           })
           if(response.status === 200)
           {
             const { data } = response
-            await localStorage.setItem('access_token', data.access_token);
-            this.setAuthentication(true);
-            await this.$router.push('/');
+            await localStorage.setItem('access_token', data.access_token)
+            this.setAuthentication(true)
+            await this.$router.push('/')
           } else {
-            this.loginError = true;
+            this.loginError = true
           }
         } catch (error) {
           console.error(error)
-          this.loginError = true;
+          this.loginError = true
         }
       }
     },
@@ -93,7 +93,7 @@ export default {
   async mounted() {
     if(this.isAuthenticated)
     {
-      await this.$router.push('/');
+      await this.$router.push('/')
     }
   }
 }

@@ -1,15 +1,17 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import login from '@/pages/login.vue'
-import { createLocalVue, shallowMount } from '@vue/test-utils'
+import { shallowMount } from '@vue/test-utils'
 import { login as mockLogin } from '@/plugin/api'
 
 Vue.use(Vuetify)
 
 let response = { data: { access_token: '12345' } };
+
 jest.mock('@/plugin/api', () => ({
   login: jest.fn(() => Promise.resolve(response))
 }))
+
 describe('login', () => {
   let wrapper
   let setAuthentication = jest.fn()

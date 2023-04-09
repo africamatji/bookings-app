@@ -24,6 +24,7 @@
       <v-row>
         <v-col cols="4">
           <v-btn
+            :loading="loginLoading"
             color="success"
             class="mr-4"
             @click="submit"
@@ -50,6 +51,7 @@ export default {
       email: null,
       password: null,
       loginError: false,
+      loginLoading: false,
       emailRules: [
         v => !!v || 'E-mail is required',
         v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
@@ -66,6 +68,7 @@ export default {
     async submit() {
       if(this.$refs.loginForm.validate())
       {
+        this.loginLoading = true
         try {
           const response = await login({
             email: this.email,
@@ -80,6 +83,7 @@ export default {
           } else {
             this.loginError = true
           }
+          this.loginLoading = false
         } catch (error) {
           console.error(error)
           this.loginError = true

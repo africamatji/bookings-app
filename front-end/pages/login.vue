@@ -1,7 +1,7 @@
 <template>
-  <v-row>
-    <v-col>
-      <p>Login</p>
+  <v-row justify="center" align="center">
+    <v-col cols="12" sm="8" md="6" class="mt-4">
+      <h2>Login</h2>
       <v-form ref="loginForm">
         <v-text-field
           v-model="email"
@@ -12,26 +12,36 @@
 
         <v-text-field
           v-model="password"
-          :counter="10"
           :rules="passwordRules"
           label="Password"
+          type="password"
           required
         ></v-text-field>
       </v-form>
-        <v-btn
-          color="success"
-          class="mr-4"
-          @click="submit"
-        >
-          Login
-        </v-btn>
+      <v-alert dense outlined type="error" v-if="loginError">
+        Please confirm login details and retry
+      </v-alert>
+      <v-row>
+        <v-col cols="4">
+          <v-btn
+            color="success"
+            class="mr-4"
+            @click="submit"
+          >
+            Login
+          </v-btn>
+        </v-col>
+        <v-col class="mt-2">
+          <nuxt-link to="/register">Register >></nuxt-link>
+        </v-col>
+      </v-row>
     </v-col>
   </v-row>
 </template>
 
 <script>
 import { login } from "../plugin/api";
-import { mapMutations } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex';
 
 export default {
   name: "login",
@@ -39,6 +49,7 @@ export default {
     return {
       email: null,
       password: null,
+      loginError: false,
       emailRules: [
         v => !!v || 'E-mail is required',
         v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
@@ -49,6 +60,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['isAuthenticated'])
   },
   methods: {
     async submit() {
@@ -59,12 +71,18 @@ export default {
             email: this.email,
             password: this.password
           })
-          await localStorage.setItem('access_token', response.data.access_token);
-          this.setAuthentication(true);
-          this.$router.push('/');
+          if(response.status === 200)
+          {
+            const { data } = response
+            await localStorage.setItem('access_token', data.access_token)
+            this.setAuthentication(true)
+            await this.$router.push('/')
+          } else {
+            this.loginError = true
+          }
         } catch (error) {
           console.error(error)
-          this.error = 'Login failed'
+          this.loginError = true
         }
       }
     },
@@ -72,6 +90,12 @@ export default {
       setAuthentication: 'setAuthentication',
     })
   },
+  async mounted() {
+    if(this.isAuthenticated)
+    {
+      await this.$router.push('/')
+    }
+  }
 }
 </script>
 

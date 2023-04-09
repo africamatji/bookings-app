@@ -45,7 +45,7 @@ export default {
       date: null,
       reason: null,
       requiredRules: [
-        v => !!v || 'Reason is required',
+        v => !!v || 'Field is required',
       ],
     }
   },
@@ -64,7 +64,6 @@ export default {
           const { data } = await addBooking(request_data)
           this.dialog = false;
           this.$emit('appendBookingList', data.booking)
-          console.log('response', data.booking)
         } catch (e) {
           console.error(e)
         }

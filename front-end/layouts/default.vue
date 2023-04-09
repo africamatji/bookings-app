@@ -22,6 +22,22 @@
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item v-if="!isAuthenticated" to="/login">
+          <v-list-item-action>
+            <v-icon>mdi-logout</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Login</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-if="isAuthenticated" @click="doLogout">
+          <v-list-item-action>
+            <v-icon>mdi-logout</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Logout</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
     <v-app-bar
@@ -48,7 +64,8 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
+import { logout } from "../plugin/api";
 
 export default {
   name: 'DefaultLayout',
@@ -63,16 +80,6 @@ export default {
           title: 'Welcome',
           to: '/'
         },
-        {
-          icon: 'mdi-logout',
-          title: 'Logout',
-          to: '/login'
-        },
-        {
-          icon: 'mdi-login',
-          title: 'Login',
-          to: '/login'
-        }
       ],
       miniVariant: false,
       right: true,
@@ -82,6 +89,21 @@ export default {
   },
   computed: {
     ...mapGetters(['isAuthenticated'])
+  },
+  methods: {
+    async doLogout() {
+      try{
+        await logout()
+        localStorage.removeItem('access_token');
+        this.setAuthentication(false);
+        await this.$router.push('/login')
+      }catch (e) {
+        console.error(e)
+      }
+    },
+    ...mapMutations({
+      setAuthentication: 'setAuthentication',
+    })
   },
 }
 </script>

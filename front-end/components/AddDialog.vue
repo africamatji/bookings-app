@@ -8,6 +8,7 @@
       <v-card-text>
         <v-form ref="addForm">
           <v-textarea v-model="reason" :rules="requiredRules" label="Enter reason" rows="2" />
+          <p class="text-caption"><v-icon color="orange">mdi-alert</v-icon>Previous dates are enabled for the sake of testing <strong>past bookings</strong></p>
           <v-date-picker v-model="date" :rules="requiredRules" :landscape="true" />
         </v-form>
       </v-card-text>

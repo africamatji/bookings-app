@@ -47,15 +47,6 @@ services:
                 - '-p${DB_PASSWORD}'
             retries: 3
             timeout: 5s
-    front-end:
-        build:
-            context: ../front-end
-            dockerfile: Dockerfile
-        ports:
-            - '3000:3000'
-        command: sh -c "yarn install && yarn build && yarn start"
-        networks:
-            - sail
 networks:
     sail:
         driver: bridge

@@ -1,24 +1,31 @@
-FROM node:16.14.2-alpine
+FROM node:lts as builder
 
-# update dependencies
-#RUN apk update && apk upgrade
+WORKDIR /app
 
-# create.destination.directory
-RUN mkdir -p /usr/src/nuxt-app
-WORKDIR  /usr/src/nuxt-app
+COPY . .
 
-#set production environment
-RUN export NODE_ENV=production
-
-# copy nuxt files
-COPY . /usr/src/nuxt-app/
-RUN yarn install
+RUN yarn install \
+  --prefer-offline \
+  --frozen-lockfile \
+  --non-interactive \
+  --production=true
 
 RUN yarn build
 
-EXPOSE 80
+RUN rm -rf node_modules && \
+  NODE_ENV=production yarn install \
+  --prefer-offline \
+  --pure-lockfile \
+  --non-interactive \
+  --production=true
 
-ENV NUXT_HOST=0.0.0.0
-ENV NUXT_PORT=80
+FROM node:lts
 
-CMD [ "yarn", "start"]
+WORKDIR /app
+
+COPY --from=builder /app  .
+
+ENV HOST 0.0.0.0
+EXPOSE 3000
+
+CMD [ "yarn", "start" ]

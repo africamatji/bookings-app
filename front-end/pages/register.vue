@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { register, login } from "../plugin/api";
+//import { register, login } from "../plugin/api";
 import { mapMutations } from "vuex";
 
 export default {
@@ -82,17 +82,29 @@ export default {
             email,
             password,
           };
-          const response = await register(payload)
+          const response = await this.$axios.$post('/register', payload)
+          console.log('response', response)
+          console.log('response.status', response.status)
+
+          const loginPayload = {
+            email,
+            password
+          }
+          const { data } = await this.$axios.$post('/login', loginPayload)
+          await localStorage.setItem('access_token', data.access_token)
+          this.setAuthentication(true)
+          await this.$router.push('/')
+/*
           if(response.status === 200) {
             const loginPayload = {
               email,
               password
             }
-            const { data } = await login(loginPayload)
+            const { data } = await this.$axios.$post('/login', loginPayload)
             await localStorage.setItem('access_token', data.access_token)
             this.setAuthentication(true)
             await this.$router.push('/')
-          }
+          }*/
         }catch (e) {
           console.error(e)
         }

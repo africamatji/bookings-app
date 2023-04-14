@@ -41,7 +41,7 @@
               No bookings
             </p>
             <template v-else>
-              <v-list v-for="(booking, i) in bookings">
+              <v-list v-for="(booking, i) in bookings" :key="booking.id">
                 <v-list-item :key="`item-${i}`">
                   <v-list-item-content>
                     <v-list-item-title class="pb-2">
@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import { filterBookings, listBookings } from "../plugin/api";
+//import { filterBookings, listBookings } from "../plugin/api";
 import { mapGetters } from "vuex";
 import Loaders from "@/components/Loaders.vue";
 import AddDialog from "@/components/AddDialog.vue";
@@ -89,9 +89,15 @@ export default {
       this.$refs.addDialogRef.toggleDialog(true)
     },
     async filterBookings(type) {
+      const accessToken = localStorage.getItem('access_token')
       this.isLoading = true
+
       try {
-        const { data } = await filterBookings(type)
+        const data = await this.$axios.$get(`/booking/filter?type=${type}`, {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`
+          }
+        })
         this.isLoading = false
         this.bookings = data.bookings
       } catch (error) {
@@ -99,8 +105,14 @@ export default {
       }
     },
     async allBookings() {
+      const accessToken = localStorage.getItem('access_token')
+
       try {
-        const { data } = await listBookings()
+        const data = await this.$axios.$get('/booking/list', {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`
+          }
+        })
         this.isLoading = false
         this.bookings = data.bookings
       } catch (error) {

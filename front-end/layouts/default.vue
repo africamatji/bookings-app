@@ -64,8 +64,8 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
-import { logout } from "../plugin/api";
+import { mapGetters, mapMutations } from "vuex"
+//import { logout } from "../plugin/api"
 
 export default {
   name: 'DefaultLayout',
@@ -92,8 +92,14 @@ export default {
   },
   methods: {
     async doLogout() {
+      const accessToken = localStorage.getItem('access_token')
+
       try{
-        await logout()
+        await this.$axios.$get('/logout', {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`
+          }
+        })
         localStorage.removeItem('access_token');
         this.setAuthentication(false);
         await this.$router.push('/login')

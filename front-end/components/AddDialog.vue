@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { addBooking } from "../plugin/api";
+//import { addBooking } from "../plugin/api";
 
 export default {
   name: "AddDialog",
@@ -55,14 +55,21 @@ export default {
       this.dialog = value
     },
     async addBooking() {
+      const accessToken = localStorage.getItem('access_token')
+
       if(this.$refs.addForm.validate())
       {
         const request_data = {
           'reason': this.reason,
           'date': this.date,
         };
+
         try {
-          const { data } = await addBooking(request_data)
+          const data = await this.$axios.$post('/booking/create', request_data, {
+            headers: {
+              'Authorization': `Bearer ${accessToken}`
+            }
+          })
           this.dialog = false;
           this.$emit('appendBookingList', data.booking)
         } catch (e) {

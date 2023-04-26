@@ -42,7 +42,14 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    '@nuxtjs/axios',
   ],
+
+  publicRuntimeConfig: {
+    axios: {
+      baseURL: 'http://localhost:8000/api'
+    }
+  },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
@@ -65,5 +72,7 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-  }
+    transpile: ['axios']
+  },
+  debug: true,
 }

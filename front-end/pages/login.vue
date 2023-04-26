@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { login } from "../plugin/api";
+//import { login } from "../plugin/api";
 import { mapMutations, mapGetters } from 'vuex';
 
 export default {
@@ -70,7 +70,7 @@ export default {
       {
         this.loginLoading = true
         try {
-          const response = await login({
+          const response = await this.$axios.$post('/login', {
             email: this.email,
             password: this.password
           })
